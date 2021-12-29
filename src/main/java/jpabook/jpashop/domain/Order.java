@@ -82,6 +82,10 @@ public class Order {
     }
 
     // == 조회 로직 == //
+
+    /**
+     * 총 가격
+     */
     public int getTotalPrice() {
         return orderItems.stream().mapToInt(OrderItem::getTotalPrice).sum();
     }
