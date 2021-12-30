@@ -15,20 +15,15 @@ public class MemberService {
 
     private final MemberRepository memberRepository;
 
+    /**
+     * 회원 가입
+     */
     @Transactional
     public Long join(Member member) {
-        validateDuplicateMember(member);
+
+        validateDuplicateMember(member); //중복 회원 검증
         memberRepository.save(member);
-
         return member.getId();
-    }
-
-    public List<Member> findMembers() {
-        return memberRepository.findAll();
-    }
-
-    public Member findOne(Long id) {
-        return memberRepository.findOne(id);
     }
 
     private void validateDuplicateMember(Member member) {
@@ -37,4 +32,14 @@ public class MemberService {
             throw new IllegalStateException("이미 존재하는 회원입니다.");
         }
     }
+
+    //회원 전체 조회
+    public List<Member> findMembers() {
+        return memberRepository.findAll();
+    }
+
+    public Member findOne(Long memberId) {
+        return memberRepository.findOne(memberId);
+    }
+
 }

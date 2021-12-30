@@ -9,7 +9,6 @@ import jpabook.jpashop.domain.item.Item;
 import jpabook.jpashop.exception.NotEnoughStockException;
 import jpabook.jpashop.repository.OrderRepository;
 import org.junit.Test;
-import org.junit.jupiter.api.Assertions;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -17,21 +16,17 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
-import java.time.LocalDateTime;
 
-import static org.junit.jupiter.api.Assertions.fail;
+import static org.junit.Assert.*;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @Transactional
 public class OrderServiceTest {
 
-    @Autowired
-    EntityManager em;
-    @Autowired
-    OrderService orderService;
-    @Autowired
-    OrderRepository orderRepository;
+    @Autowired EntityManager em;
+    @Autowired OrderService orderService;
+    @Autowired OrderRepository orderRepository;
 
     @Test
     public void 상품주문() throws Exception {
@@ -43,15 +38,15 @@ public class OrderServiceTest {
         int orderCount = 2;
 
         //when
-        Long orderId = orderService.order(member.getId(), book.getId(), orderCount, LocalDateTime.now());
+        Long orderId = orderService.order(member.getId(), book.getId(), orderCount);
 
         //then
         Order getOrder = orderRepository.findOne(orderId);
 
-        Assertions.assertEquals(OrderStatus.ORDER, getOrder.getStatus());
-        Assertions.assertEquals(1, getOrder.getOrderItems().size());
-        Assertions.assertEquals(10000 * orderCount, getOrder.getTotalPrice());
-        Assertions.assertEquals(8, book.getStockQuantity());
+        assertEquals("상품 주문시 상태는 ORDER", OrderStatus.ORDER, getOrder.getStatus());
+        assertEquals("주문한 상품 종류 수가 정확해야 한다.", 1, getOrder.getOrderItems().size());
+        assertEquals("주문 가격은 가격 * 수량이다.", 10000 * orderCount, getOrder.getTotalPrice());
+        assertEquals("주문 수량만큼 재고가 줄어야 한다.", 8, book.getStockQuantity());
     }
 
     @Test(expected = NotEnoughStockException.class)
@@ -63,7 +58,7 @@ public class OrderServiceTest {
         int orderCount = 11;
 
         //when
-        orderService.order(member.getId(), item.getId(), orderCount, LocalDateTime.now());
+        orderService.order(member.getId(), item.getId(), orderCount);
 
         //then
         fail("재고 수량 부족 예외가 발행해야 한다.");
@@ -77,7 +72,7 @@ public class OrderServiceTest {
 
         int orderCount = 2;
 
-        Long orderId = orderService.order(member.getId(), item.getId(), orderCount, LocalDateTime.now());
+        Long orderId = orderService.order(member.getId(), item.getId(), orderCount);
 
         //when
         orderService.cancelOrder(orderId);
@@ -85,8 +80,8 @@ public class OrderServiceTest {
         //then
         Order getOrder = orderRepository.findOne(orderId);
 
-        Assertions.assertEquals(OrderStatus.CANCEL, getOrder.getStatus());
-        Assertions.assertEquals(10, item.getStockQuantity());
+        assertEquals("주문 취소시 상태는 CANCEL 이다.", OrderStatus.CANCEL, getOrder.getStatus());
+        assertEquals("주문이 취소된 상품은 그만큼 재고가 증가해야 한다.", 10, item.getStockQuantity());
     }
 
     private Book createBook(String name, int price, int stockQuantity) {
@@ -105,4 +100,6 @@ public class OrderServiceTest {
         em.persist(member);
         return member;
     }
+
+
 }
