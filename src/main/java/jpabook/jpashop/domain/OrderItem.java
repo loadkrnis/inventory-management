@@ -28,6 +28,9 @@ public class OrderItem {
     private int orderPrice;
     private int count;
 
+    protected OrderItem() {
+    }
+
     // == 펙토리 메서드 == //
     public static OrderItem createOrderItem(Item item, int orderPrice, int count) {
         OrderItem orderItem = new OrderItem();

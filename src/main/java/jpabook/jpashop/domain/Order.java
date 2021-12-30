@@ -6,6 +6,7 @@ import lombok.Setter;
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static javax.persistence.CascadeType.ALL;
@@ -39,11 +40,11 @@ public class Order {
     private OrderStatus status;
 
     // == 생성 메서드 == //
-    public static Order createOrder(Member member, Delivery delivery, List<OrderItem> orderItems, LocalDateTime now) {
+    public static Order createOrder(Member member, Delivery delivery, LocalDateTime now, OrderItem... orderItems) {
         Order order = new Order();
         order.setMember(member);
         order.setDelivery(delivery);
-        orderItems.forEach(order::addOrderItem);
+        Arrays.stream(orderItems).forEach(orderItem -> order.addOrderItem(orderItem));
         order.setStatus(OrderStatus.ORDER);
         order.setOrderDate(now);
 
