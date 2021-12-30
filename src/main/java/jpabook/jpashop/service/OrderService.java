@@ -42,4 +42,18 @@ public class OrderService {
 
         return order.getId();
     }
+
+    /**
+     * 주문 취소
+     */
+    @Transactional
+    public void cancelOrder(Long orderId) {
+        Order order = orderRepository.findOne(orderId);
+        order.cancel();
+    }
+
+    /**
+     * 주문 검색
+     */
+//    public List<Order> findOrders(OrderSearchDto dtp) { return orderRepository.findAll(dto); }
 }

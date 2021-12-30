@@ -82,7 +82,6 @@ public class Order {
 
         this.setStatus(OrderStatus.CANCEL);
         orderItems.forEach(OrderItem::cancel);
-
     }
 
     // == 조회 로직 == //
